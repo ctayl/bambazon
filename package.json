@@ -1,0 +1,23 @@
+{
+  "name": "bambazon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "bambazon.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lyonx/bambazon.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/lyonx/bambazon/issues"
+  },
+  "homepage": "https://github.com/lyonx/bambazon#readme",
+  "dependencies": {
+    "inquirer": "^4.0.2",
+    "mysql": "^2.15.0"
+  }
+}
