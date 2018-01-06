@@ -1,0 +1,6 @@
+item_id,product_name,department_name,price,stock_quantity
+1,apple,produce,1,65
+2,"red wine",liquor,10,13
+3,advil,"general merchandise",4,32
+4,chips,grocery,2,24
+5,"tide pods","general merchandise",11,0
