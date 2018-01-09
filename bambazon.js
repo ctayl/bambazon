@@ -1,7 +1,7 @@
 var mysql = require('mysql');
 var inquirer = require('inquirer');
 
-// Object that handles database connection (hey john)
+// Object that handles database connection (hi john)
 var database = {
 
     connection: mysql.createConnection({
@@ -20,8 +20,10 @@ var database = {
     }
 };
 
+// customer object, contains methods for retreving inventory, buying items, and restocking items (ran out of time, intended for a supervisor object)
 var customer = {
 
+    // connects to database, fetches inventory, and depending on the truthiness of control, continues the app by running the purchase prompt customer.prompt();
     get: function (control) {
 
         if (control) {
@@ -72,6 +74,7 @@ var customer = {
 
     },
 
+    // restocks items
     post: function (id, quantity) {
         database.connect();
         database.connection.query("UPDATE products SET stock_quantity = stock_quantity + ? WHERE item_id = ?", [quantity, id], function (err) {
@@ -86,6 +89,7 @@ var customer = {
         database.connection.end();
     },
 
+    // prompts for item id and quantity, and passes the values in to customer.buy()
     prompt: function () {
         inquirer.prompt([{
             name: "id",
@@ -102,6 +106,7 @@ var customer = {
         })
     },
 
+    // method that deducts quantity from the item stock, and terminates the connection
     buy: function (id, quantity) {
 
         database.connection.query("SELECT * FROM products WHERE item_id = ?", [id], function (err, res) {
@@ -139,6 +144,7 @@ var customer = {
         });
     },
 
+    // starts the app by prompting the user for an action: shop or supervisor
     init: function () {
         inquirer.prompt([{
             name: 'method',
@@ -182,4 +188,5 @@ var customer = {
     }
 }
 
+// this function call initiates the app. customer.init() is the entry point to the control flow
 customer.init();
