@@ -18,4 +18,4 @@
         * Veiw:
             * A list of items sorted by ID numbers appears.
 
-** mySQL authentication info ** `bambazon.js 5`
+__mySQL authentication info__ `bambazon.js 5`
