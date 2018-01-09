@@ -19,5 +19,6 @@
   "dependencies": {
     "inquirer": "^4.0.2",
     "mysql": "^2.15.0"
-  }
+  },
+  "devDependencies": {}
 }
