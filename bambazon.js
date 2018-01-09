@@ -1,6 +1,7 @@
 var mysql = require('mysql');
 var inquirer = require('inquirer');
 
+// Object that handles database connection (hey john)
 var database = {
 
     connection: mysql.createConnection({
@@ -21,38 +22,65 @@ var database = {
 
 var customer = {
 
-    get: function () {
-        database.connect();
+    get: function (control) {
 
-        database.connection.query("SELECT * FROM products", function (err, res) {
-            if (err) throw (err);
-            for (let i = 0; i < res.length; i++) {
-                let id = res[i].item_id;
-                let name = res[i].product_name;
-                let department = res[i].department_name;
-                let price = res[i].price;
-                let stock = res[i].stock_quantity;
-                console.log(`-------- ITEM ID: ${id} --------`);
-                console.log(`Item: ${name}`);
-                console.log(`Department: ${department}`);
-                console.log(`Price: ${price}`);
-                console.log(`Avalible: ${stock}`);
-            };
-            customer.prompt();
-        });
+        if (control) {
+            database.connect();
+
+            database.connection.query("SELECT * FROM products", function (err, res) {
+                if (err) throw (err);
+                for (let i = 0; i < res.length; i++) {
+                    let id = res[i].item_id;
+                    let name = res[i].product_name;
+                    let department = res[i].department_name;
+                    let price = res[i].price;
+                    let stock = res[i].stock_quantity;
+                    console.log(`-------- ITEM ID: ${id} --------`);
+                    console.log(`Item: ${name}`);
+                    console.log(`Department: ${department}`);
+                    console.log(`Price: ${price}`);
+                    console.log(`Avalible: ${stock}`);
+                    console.log(`------------------------------`);
+                    console.log(" ");
+                };
+                
+                database.connection.end();
+            });
+        } else {
+            database.connect();
+
+            database.connection.query("SELECT * FROM products", function (err, res) {
+                if (err) throw (err);
+                for (let i = 0; i < res.length; i++) {
+                    let id = res[i].item_id;
+                    let name = res[i].product_name;
+                    let department = res[i].department_name;
+                    let price = res[i].price;
+                    let stock = res[i].stock_quantity;
+                    console.log(`-------- ITEM ID: ${id} --------`);
+                    console.log(`Item: ${name}`);
+                    console.log(`Department: ${department}`);
+                    console.log(`Price: ${price}`);
+                    console.log(`Avalible: ${stock}`);
+                    console.log(`------------------------------`);
+                    console.log(" ");
+                };
+                customer.prompt();
+            });
+        }
+
 
     },
 
-    post: function (name, department, price, stock) {
+    post: function (id, quantity) {
         database.connect();
-        database.connection.query("INSERT INTO products SET ? ", {
-            product_name: name,
-            department_name: department,
-            price: price,
-            stock_quantity: stock
-        }, function (err) {
+        database.connection.query("UPDATE products SET stock_quantity = stock_quantity + ? WHERE item_id = ?", [quantity, id], function (err) {
             if (err) throw (err);
-            console.log(`${stock} ${name} sucessfully posted for $${price} each in the ${department} department!`);
+            console.log(`------------------------------`);
+            console.log("Restock sucessful");
+            console.log(`Product id: ${id}`);
+            console.log(`Quantity stocked: ${quantity}`);
+            console.log(`------------------------------`);
         });
 
         database.connection.end();
@@ -93,9 +121,13 @@ var customer = {
 
                     }, function (err, res) {
                         if (err) throw err;
+                        console.log(" ");
+                        console.log(`------------------------------`);
                         console.log(`${quantity} ${name} bought for $${price} each!`);
                         let total = quantity * price;
-                        console.log(`Your total is: ${total}`);
+                        console.log(`Your total is: $${total}`);
+                        console.log(`------------------------------`);
+                        console.log(" ");
                     });
 
 
@@ -111,35 +143,40 @@ var customer = {
         inquirer.prompt([{
             name: 'method',
             type: 'list',
-            choices: ['Buy', 'Post'],
+            choices: ['Shop', 'Supervisor'],
             message: "Make a selection: "
         }]).then(function (res) {
-            if (res.method === 'Buy') {
+            if (res.method === 'Shop') {
                 customer.get();
-            } else if (res.method === 'Post') {
-                inquirer.prompt([{
-                    type: 'input',
-                    name: 'name',
-                    message: 'Enter item name: '
-                },
-                {
-                    type: 'input',
-                    name: 'department',
-                    message: 'Enter item department: '
-                },
-                {
-                    type: 'input',
-                    name: 'price',
-                    message: 'Enter item price: '
-                },
-                {
-                    type: 'input',
-                    name: 'quantity',
-                    message: 'Enter item quantity: '
-                }
+            } else if (res.method === 'Supervisor') {
+                inquirer.prompt([
+                    {
+                        type: 'list',
+                        name: 'method',
+                        choices: ["Restock", "View"],
+                        message: 'Pick an action: '
+                    }
                 ]).then(function (res) {
-                    customer.post(res.name, res.department, res.price, res.quantity);
-                })
+
+                    if (res.method === 'View') {
+                        customer.get(true);
+                    } else if (res.method === 'Restock') {
+                        inquirer.prompt([{
+                            type: 'input',
+                            name: 'id',
+                            message: 'RESTOCKING: Enter item ID: '
+                        },
+                        {
+                            type: 'input',
+                            name: 'quantity',
+                            message: 'Enter quantity to restock: '
+                        }
+                        ]).then(function (res) {
+                            customer.post(res.id, res.quantity);
+                        })
+                    }
+                });
+
             }
         })
     }
