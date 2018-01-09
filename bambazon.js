@@ -94,6 +94,8 @@ var customer = {
                     }, function (err, res) {
                         if (err) throw err;
                         console.log(`${quantity} ${name} bought for $${price} each!`);
+                        let total = quantity * price;
+                        console.log(`Your total is: ${total}`);
                     });
 
 
