@@ -18,6 +18,6 @@
         * Veiw:
             * A list of items sorted by ID numbers appears.
             
-* Demo video: `demo-video.mp4`
+* Demo video: `bambazon/demo-video.mp4`
 
 __mySQL authentication info__ `bambazon.js 5`
